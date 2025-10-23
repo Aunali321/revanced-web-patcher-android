@@ -1,0 +1,73 @@
+name: Build Android APK
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build APK
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew assembleRelease
+
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        continue-on-error: true
+
+      - name: Rename APK
+        run: |
+          cd app/build/outputs/apk/release
+          if [ -f "app-release-unsigned.apk" ]; then
+            mv app-release-unsigned.apk revanced-web-patcher.apk
+          elif [ -f "*-signed.apk" ]; then
+            mv *-signed.apk revanced-web-patcher.apk
+          else
+            mv app-release.apk revanced-web-patcher.apk
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/revanced-web-patcher.apk
+          body: |
+            ## Android APK Release
+            
+            ### Installation
+            1. Download `revanced-web-patcher.apk`
+            2. Enable "Install from unknown sources" in Android settings
+            3. Install the APK
+            4. Open the app and tap "Start Server"
+            5. Visit https://rv.aun.rest in your browser
+            6. Enter server URL: `http://localhost:3000`
+            
+            ### Requirements
+            - Android 7.0 (API 24) or higher
+            - At least 2GB RAM recommended
+            
+            **Note:** This APK is unsigned. You may see a security warning during installation.
