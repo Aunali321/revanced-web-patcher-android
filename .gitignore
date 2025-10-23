@@ -1,12 +1,13 @@
+# Gradle
+.gradle/
+build/
+app/build/
+
+# IDE
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea
+local.properties
+
+# OS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-*.apk
-*.ap_
-*.aab
+Thumbs.db
