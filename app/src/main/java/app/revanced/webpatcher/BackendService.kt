@@ -9,12 +9,24 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import app.revanced.library.logging.Logger
+import app.revanced.webpatcher.routing.configurePatchRoutes
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.defaultheaders.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.slf4j.event.Level
 
 class BackendService : Service() {
     private var server: NettyApplicationEngine? = null
@@ -36,14 +48,51 @@ class BackendService : Service() {
             try {
                 Logger.setDefault()
                 server = embeddedServer(Netty, port = 3000) {
-                    // Same configuration as desktop backend
-                    // Due to complexity, you'll need to copy the full Application.kt logic here
-                    // For now, just a simple health endpoint
-                    routing {
-                        get("/health") {
-                            call.respond(mapOf("status" to "ok"))
+                    install(DefaultHeaders)
+                    install(CallLogging) { level = Level.INFO }
+
+                    install(CORS) {
+                        anyHost()
+                        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+                        allowMethod(HttpMethod.Options)
+                        allowMethod(HttpMethod.Get)
+                        allowMethod(HttpMethod.Post)
+                        allowHeaders { true }
+                        allowSameOrigin
+                        allowNonSimpleContentTypes = true
+                        exposeHeader("X-Patch-Job-Id")
+                        exposeHeader(HttpHeaders.ContentDisposition)
+                    }
+
+                    install(ContentNegotiation) {
+                        jackson {
+                            registerModule(JavaTimeModule())
+                            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                         }
                     }
+
+                    install(StatusPages) {
+                        exception<PatchProcessingException> { call, cause ->
+                            call.respondPatchError(cause.message ?: "Failed to patch APK", cause.status)
+                        }
+
+                        exception<IllegalArgumentException> { call, cause ->
+                            call.respondPatchError(
+                                cause.message ?: "Invalid request",
+                                PatchErrorStatus.BAD_REQUEST
+                            )
+                        }
+
+                        exception<Throwable> { call, cause ->
+                            call.respondPatchError(
+                                "Unexpected server error",
+                                PatchErrorStatus.SERVER_ERROR,
+                                logCause = cause,
+                            )
+                        }
+                    }
+
+                    configurePatchRoutes()
                 }
                 server?.start(wait = false)
             } catch (e: Exception) {
