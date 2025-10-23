@@ -70,15 +70,22 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     
-    // Ktor server
-    implementation("io.ktor:ktor-server-core:2.3.7")
-    implementation("io.ktor:ktor-server-netty:2.3.7")
+    // Ktor server (exclude Logback - incompatible with Android)
+    implementation("io.ktor:ktor-server-core:2.3.7") {
+        exclude(group = "ch.qos.logback", module = "logback-classic")
+    }
+    implementation("io.ktor:ktor-server-netty:2.3.7") {
+        exclude(group = "ch.qos.logback", module = "logback-classic")
+    }
     implementation("io.ktor:ktor-server-cors:2.3.7")
     implementation("io.ktor:ktor-server-content-negotiation:2.3.7")
     implementation("io.ktor:ktor-server-status-pages:2.3.7")
     implementation("io.ktor:ktor-serialization-jackson:2.3.7")
     implementation("io.ktor:ktor-server-call-logging:2.3.7")
     implementation("io.ktor:ktor-server-default-headers:2.3.7")
+    
+    // SLF4J Android logger (replacement for Logback)
+    implementation("org.slf4j:slf4j-android:1.7.36")
     
     // ReVanced libraries
     implementation("app.revanced:revanced-patcher:21.0.0")
