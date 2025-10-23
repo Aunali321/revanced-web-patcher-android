@@ -21,7 +21,7 @@ Android app version of the ReVanced Web Patcher backend server.
 
 ## Requirements
 
-- Android 7.0 (API 24) or higher
+- Android 8.0 (API 26) or higher
 - At least 2GB RAM recommended
 - Storage space for APKs and patches
 
