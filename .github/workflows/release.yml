@@ -27,7 +27,9 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew assembleRelease
+        run: |
+          ./gradlew clean
+          ./gradlew assembleRelease --no-daemon --no-build-cache
 
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
