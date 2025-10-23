@@ -6,6 +6,13 @@ plugins {
 android {
     namespace = "app.revanced.webpatcher"
     compileSdk = 35
+    
+    configurations.all {
+        resolutionStrategy {
+            force("androidx.core:core:1.15.0")
+            force("androidx.core:core-ktx:1.15.0")
+        }
+    }
 
     defaultConfig {
         applicationId = "app.revanced.webpatcher"
