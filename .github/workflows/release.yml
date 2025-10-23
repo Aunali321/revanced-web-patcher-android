@@ -31,31 +31,17 @@ jobs:
           ./gradlew clean
           ./gradlew assembleRelease --no-daemon --no-build-cache
 
-      # Skip signing for now - unsigned APK is fine
-      # - name: Sign APK
-      #   uses: r0adkll/sign-android-release@v1
-      #   id: sign_app
-      #   with:
-      #     releaseDirectory: app/build/outputs/apk/release
-      #     signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-      #     alias: ${{ secrets.KEY_ALIAS }}
-      #     keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
-      #   continue-on-error: true
+      # APK is signed by Gradle using debug keystore
 
       - name: Rename APK
         run: |
           cd app/build/outputs/apk/release
           ls -la
-          # Try different possible APK names
-          if [ -f app-release-unsigned.apk ]; then
-            cp app-release-unsigned.apk revanced-web-patcher.apk
-          elif ls *-signed.apk 1> /dev/null 2>&1; then
-            cp *-signed.apk revanced-web-patcher.apk
-          elif [ -f app-release.apk ]; then
+          # APK should be app-release.apk (signed by Gradle)
+          if [ -f app-release.apk ]; then
             cp app-release.apk revanced-web-patcher.apk
           else
-            echo "Error: No APK found!"
+            echo "Error: app-release.apk not found!"
             exit 1
           fi
           ls -la revanced-web-patcher.apk
