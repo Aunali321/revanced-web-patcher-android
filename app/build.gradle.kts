@@ -6,17 +6,10 @@ plugins {
 android {
     namespace = "app.revanced.webpatcher"
     compileSdk = 35
-    
-    configurations.all {
-        resolutionStrategy {
-            force("androidx.core:core:1.15.0")
-            force("androidx.core:core-ktx:1.15.0")
-        }
-    }
 
     defaultConfig {
         applicationId = "app.revanced.webpatcher"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
@@ -24,11 +17,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 
@@ -39,6 +29,28 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+    }
+    
+    packagingOptions {
+        resources.excludes.addAll(
+            listOf(
+                "META-INF/INDEX.LIST",
+                "META-INF/*.SF",
+                "META-INF/*.DSA",
+                "META-INF/*.RSA",
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0",
+                "META-INF/*.kotlin_module",
+                "META-INF/io.netty.versions.properties",
+                "META-INF/versions/9/module-info.class"
+            )
+        )
     }
 }
 

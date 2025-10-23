@@ -1,0 +1,15 @@
+R_DEF: Internal format may change without notice
+local
+id instructions
+id status
+id title
+id toggle_button
+id url
+layout activity_main
+string app_name
+string notification_text
+string notification_title
+string server_running
+string server_stopped
+string start_server
+string stop_server

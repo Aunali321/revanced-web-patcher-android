@@ -1,0 +1,13 @@
+#Thu Oct 23 19:31:59 IST 2025
+path.3=classes4.dex
+path.2=classes3.dex
+path.1=classes2.dex
+path.0=classes.dex
+base.3=/home/aun/Projects/revanced-web-patcher-android/app/build/intermediates/dex/release/mergeDexRelease/classes4.dex
+base.2=/home/aun/Projects/revanced-web-patcher-android/app/build/intermediates/dex/release/mergeDexRelease/classes3.dex
+base.1=/home/aun/Projects/revanced-web-patcher-android/app/build/intermediates/dex/release/mergeDexRelease/classes2.dex
+base.0=/home/aun/Projects/revanced-web-patcher-android/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+renamed.3=classes4.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
