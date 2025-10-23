@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "app.revanced.webpatcher"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "app.revanced.webpatcher"
@@ -36,10 +36,9 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.core:core:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     
     // Ktor server
