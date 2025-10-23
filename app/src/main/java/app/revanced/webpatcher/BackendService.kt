@@ -46,7 +46,7 @@ class BackendService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         serviceScope.launch {
             try {
-                Logger.setDefault()
+                // Skip Logger.setDefault() on Android - use Android's built-in logging
                 server = embeddedServer(Netty, port = 3000) {
                     install(DefaultHeaders)
                     install(CallLogging) { level = Level.INFO }
